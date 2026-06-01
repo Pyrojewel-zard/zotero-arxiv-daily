@@ -2,12 +2,17 @@ from abc import ABC, abstractmethod
 from omegaconf import DictConfig
 from ..protocol import Paper, CorpusPaper
 import numpy as np
-from typing import Type
+from typing import NamedTuple, Optional, Type
+
+class RerankResult(NamedTuple):
+    papers: list[Paper]
+    sim_matrix: Optional[np.ndarray] = None  # shape: (num_candidates, num_corpus)
+
 class BaseReranker(ABC):
     def __init__(self, config:DictConfig):
         self.config = config
 
-    def rerank(self, candidates:list[Paper], corpus:list[CorpusPaper]) -> list[Paper]:
+    def rerank(self, candidates:list[Paper], corpus:list[CorpusPaper]) -> RerankResult:
         corpus = sorted(corpus,key=lambda x: x.added_date,reverse=True)
         time_decay_weight = 1 / (1 + np.log10(np.arange(len(corpus)) + 1))
         time_decay_weight: np.ndarray = time_decay_weight / time_decay_weight.sum()
@@ -17,7 +22,7 @@ class BaseReranker(ABC):
         for s,c in zip(scores,candidates):
             c.score = s
         candidates = sorted(candidates,key=lambda x: x.score,reverse=True)
-        return candidates
+        return RerankResult(papers=candidates, sim_matrix=sim)
     
     @abstractmethod
     def get_similarity_score(self, s1:list[str], s2:list[str]) -> np.ndarray:

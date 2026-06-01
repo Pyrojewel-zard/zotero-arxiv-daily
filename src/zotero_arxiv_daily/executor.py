@@ -109,7 +109,9 @@ class Executor:
         reranked_papers = []
         if len(all_papers) > 0:
             logger.info("Reranking papers...")
-            reranked_papers = self.reranker.rerank(all_papers, corpus)
+            rerank_result = self.reranker.rerank(all_papers, corpus)
+            reranked_papers = rerank_result.papers
+            sim_matrix = rerank_result.sim_matrix
             reranked_papers = reranked_papers[:self.config.executor.max_paper_num]
             logger.info("Generating TLDR and affiliations...")
             for p in tqdm(reranked_papers):

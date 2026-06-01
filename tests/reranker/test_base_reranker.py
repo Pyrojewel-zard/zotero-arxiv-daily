@@ -28,10 +28,11 @@ def test_rerank_scores_and_sorts():
         [0.9, 0.9, 0.9],  # paper 1 — high
     ])
     reranker = StubReranker(sim)
-    ranked = reranker.rerank(papers, corpus)
-    assert ranked[0].title == "Paper 1"
-    assert ranked[1].title == "Paper 0"
-    assert ranked[0].score > ranked[1].score
+    result = reranker.rerank(papers, corpus)
+    assert result.papers[0].title == "Paper 1"
+    assert result.papers[1].title == "Paper 0"
+    assert result.papers[0].score > result.papers[1].score
+    assert result.sim_matrix is not None
 
 
 def test_rerank_time_decay_weighting():
@@ -42,14 +43,14 @@ def test_rerank_time_decay_weighting():
     sim = np.array([[0.0, 0.0, 1.0]])
     reranker = StubReranker(sim)
     ranked_old = reranker.rerank(papers, corpus)
-    score_old = ranked_old[0].score
+    score_old = ranked_old.papers[0].score
 
     # Only similar to the newest paper (index 0 after reverse-sort by date)
     papers2 = [make_sample_paper(title="P")]
     sim2 = np.array([[1.0, 0.0, 0.0]])
     reranker2 = StubReranker(sim2)
     ranked_new = reranker2.rerank(papers2, corpus)
-    score_new = ranked_new[0].score
+    score_new = ranked_new.papers[0].score
 
     # Newest corpus paper gets higher time-decay weight, so score should be higher
     assert score_new > score_old
@@ -61,8 +62,8 @@ def test_rerank_single_candidate_single_corpus():
     sim = np.array([[0.5]])
     reranker = StubReranker(sim)
     ranked = reranker.rerank(papers, corpus)
-    assert len(ranked) == 1
-    assert ranked[0].score is not None
+    assert len(ranked.papers) == 1
+    assert ranked.papers[0].score is not None
 
 
 def test_get_reranker_cls_unknown():

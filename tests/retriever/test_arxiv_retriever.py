@@ -41,6 +41,8 @@ def test_arxiv_retriever(config, mock_feedparser, monkeypatch):
             pdf_url=f"https://arxiv.org/pdf/{pid}",
             entry_id=f"https://arxiv.org/abs/{pid}",
             source_url=lambda pid=pid: f"https://arxiv.org/e-print/{pid}",
+            get_short_id=lambda pid=pid: pid,
+            doi="",
         ))
 
     class FakeClient:

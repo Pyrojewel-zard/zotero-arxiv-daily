@@ -3,6 +3,9 @@ zotero:
   api_key: ??? # An Zotero API key with read access.
   include_path: null # A list of glob patterns marking the Zotero collections that should be included. Example: ["2026/survey/**","2026/reading-group/**"]
   ignore_path: null # A list of glob patterns marking the Zotero collections that should be excluded. Example: ["2026/ignore/**","archive/**"]
+  import_enabled: false # Whether to import recommended papers to Zotero. Example: true
+  import_score_threshold: 5.0 # Minimum score for a paper to be imported. Example: 5.0
+  import_collections: {} # Map of collection name to collection key for import targets. Example: {"RF-Circuit": "ABC12345"}
 
 source:
   arxiv:

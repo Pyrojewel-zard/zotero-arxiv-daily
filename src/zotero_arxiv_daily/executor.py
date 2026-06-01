@@ -113,6 +113,22 @@ class Executor:
             reranked_papers = rerank_result.papers
             sim_matrix = rerank_result.sim_matrix
             reranked_papers = reranked_papers[:self.config.executor.max_paper_num]
+            # Import to Zotero if enabled
+            if self.config.zotero.get("import_enabled", False):
+                logger.info("Importing papers to Zotero...")
+                from .zotero_importer import ZoteroImporter
+                importer = ZoteroImporter(
+                    zotero_id=self.config.zotero.user_id,
+                    zotero_key=self.config.zotero.api_key,
+                    collection_map=dict(self.config.zotero.get("import_collections", {})),
+                )
+                import_results = importer.import_papers(
+                    papers=reranked_papers,
+                    corpus=corpus,
+                    sim_matrix=sim_matrix,
+                    score_threshold=self.config.zotero.get("import_score_threshold", 5.0),
+                )
+                logger.info(f"Zotero import done: {len(import_results)} papers processed")
             logger.info("Generating TLDR and affiliations...")
             for p in tqdm(reranked_papers):
                 p.generate_tldr(self.openai_client, self.config.llm)

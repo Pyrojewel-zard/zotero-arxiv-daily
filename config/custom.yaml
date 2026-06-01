@@ -1,7 +1,15 @@
 zotero:
   user_id: ${oc.env:ZOTERO_ID}
   api_key: ${oc.env:ZOTERO_KEY}
-  include_path: null # Or set a list of glob patterns, e.g. ["2026/survey/**","2026/reading-group/**"]
+  include_path: null
+  import_enabled: true
+  import_score_threshold: 5.0
+  import_collections:
+    RF-Circuit: 34AQUCS9
+    Passive-Device: 3KU6BGFU
+    Surrogate-Model: 9A72IDH4
+    EDA: 8WTREBUB
+    AI-Circuit-Design: 5PXXHKIZ # Or set a list of glob patterns, e.g. ["2026/survey/**","2026/reading-group/**"]
 
 email:
   sender: ${oc.env:SENDER}

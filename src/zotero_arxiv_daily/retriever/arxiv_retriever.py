@@ -166,6 +166,8 @@ class ArxivRetriever(BaseRetriever):
             full_text = extract_text_from_html(raw_paper)
         if full_text is None:
             full_text = extract_text_from_pdf(raw_paper)
+        arxiv_id = raw_paper.get_short_id().split("v")[0] if raw_paper.entry_id else None
+        doi = raw_paper.doi if raw_paper.doi else None
         return Paper(
             source=self.name,
             title=title,
@@ -174,6 +176,8 @@ class ArxivRetriever(BaseRetriever):
             url=raw_paper.entry_id,
             pdf_url=pdf_url,
             full_text=full_text,
+            arxiv_id=arxiv_id,
+            doi=doi,
         )
 
 

@@ -6,7 +6,7 @@ zotero:
 email:
   sender: ${oc.env:SENDER}
   receiver: ${oc.env:RECEIVER}
-  smtp_server: smtp.qq.com
+  smtp_server: smtp.exmail.qq.com
   smtp_port: 465
   sender_password: ${oc.env:SENDER_PASSWORD}
 
@@ -15,11 +15,12 @@ llm:
     key: ${oc.env:OPENAI_API_KEY}
     base_url: ${oc.env:OPENAI_API_BASE}
   generation_kwargs:
-    model: gpt-4o-mini
+    model: ${oc.env:OPENAI_MODEL,gpt-4o-mini}
 
 source:
   arxiv:
-    category: ["cs.AI","cs.CV","cs.LG","cs.CL"]
+    category: ["eess.SP","physics.app-ph","physics.ins-det","cs.AR","cs.CE","cs.ET","cs.LG","cs.AI","cs.NE"]
+    include_cross_list: true
 
 executor:
   debug: ${oc.env:DEBUG,null}

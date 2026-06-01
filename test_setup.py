@@ -198,6 +198,34 @@ def check_arxiv_categories() -> bool:
         return False
 
 
+def check_zotero_write() -> bool:
+    """验证 Zotero API 写入权限。"""
+    print("\n=== Zotero 写入权限检查 ===")
+    uid = os.environ.get("ZOTERO_ID", "").strip()
+    key = os.environ.get("ZOTERO_KEY", "").strip()
+    if not uid or not key:
+        _status("Zotero 写入", False, "缺少 ZOTERO_ID 或 ZOTERO_KEY")
+        return False
+
+    try:
+        from pyzotero.zotero import Zotero
+        zot = Zotero(uid, "user", key)
+        template = zot.item_template("preprint")
+        template["title"] = "__TEST_DELETE_ME__"
+        resp = zot.create_items([template])
+        if resp.get("successful"):
+            item_key = list(resp["successful"].values())[0]["key"]
+            zot.delete_item(zot.item(item_key))
+            _status("Zotero 写入", True, "写入和删除测试通过")
+            return True
+        else:
+            _status("Zotero 写入", False, f"写入失败: {resp.get('failed', {})}")
+            return False
+    except Exception as e:
+        _status("Zotero 写入", False, str(e))
+        return False
+
+
 # ---------- main ----------
 
 def main():
@@ -208,6 +236,7 @@ def main():
     results = []
     results.append(("环境变量", check_env_vars()))
     results.append(("Zotero API", check_zotero()))
+    results.append(("Zotero 写入", check_zotero_write()))
     results.append(("SMTP", check_smtp()))
     results.append(("LLM API", check_llm()))
     results.append(("arXiv 分类", check_arxiv_categories()))

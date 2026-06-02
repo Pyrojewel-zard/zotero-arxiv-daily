@@ -1,0 +1,38 @@
+zotero:
+  user_id: ${oc.env:ZOTERO_ID}
+  api_key: ${oc.env:ZOTERO_KEY}
+  include_path: ["AI-Circuit-Design/**","EDA/**","Passive-Device/**","RF-Circuit/**","Surrogate-Model/**"]
+  import_enabled: true
+  import_score_threshold: 5.0
+  import_collections:
+    RF-Circuit: 34AQUCS9
+    Passive-Device: 3KU6BGFU
+    Surrogate-Model: 9A72IDH4
+    EDA: 8WTREBUB
+    AI-Circuit-Design: 5PXXHKIZ
+
+email:
+  sender: ${oc.env:SENDER}
+  receiver: ${oc.env:RECEIVER}
+  smtp_server: smtp.exmail.qq.com
+  smtp_port: 465
+  sender_password: ${oc.env:SENDER_PASSWORD}
+
+llm:
+  api:
+    key: ${oc.env:OPENAI_API_KEY}
+    base_url: ${oc.env:OPENAI_API_BASE}
+  generation_kwargs:
+    model: ${oc.env:OPENAI_MODEL,gpt-4o-mini}
+  language: Chinese
+
+source:
+  arxiv:
+    category: ["eess.SP","physics.app-ph","physics.ins-det","cs.AR","cs.CE","cs.ET","cs.LG","cs.AI","cs.NE"]
+    include_cross_list: true
+
+executor:
+  debug: ${oc.env:DEBUG,null}
+  source: ['arxiv']
+  reranker: local
+  max_paper_num: 100
